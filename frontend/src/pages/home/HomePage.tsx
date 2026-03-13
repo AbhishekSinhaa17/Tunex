@@ -7,7 +7,6 @@ import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { usePlayerStore } from "@/stores/usePlayerStore";
 
 const HomePage = () => {
-
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good Morning";
@@ -23,7 +22,10 @@ const HomePage = () => {
     madeForYouSongs,
     featuredSongs,
     trendingSongs,
+    searchResults,
   } = useMusicStore();
+
+  const { recentSongs } = usePlayerStore();
 
   const { initializeQueue } = usePlayerStore();
 
@@ -53,7 +55,22 @@ const HomePage = () => {
             <h1 className="text-2xl sm:text-3xl font-bold mb-6">
               {getGreeting()}
             </h1>
-            <FeaturedSection />
+            {searchResults.length > 0 && (
+              <SectionGrid
+                title="Search Results"
+                songs={searchResults}
+                isLoading={false}
+              />
+            )}
+            {recentSongs.length > 0 && (
+              <SectionGrid
+                title="Recently Played"
+                songs={recentSongs}
+                isLoading={false}
+              />
+            )}
+
+            {recentSongs.length === 0 && <FeaturedSection />}
 
             <div className="space-y-8">
               <SectionGrid

@@ -1,6 +1,6 @@
 import { Song } from "../models/song.model.js";
 
-export const getAllSongs = async (req, res) => {
+export const getAllSongs = async (req, res, next) => {
   try {
     // -1 = descending order => newest first
     // 1 = ascending order => oldest first
@@ -38,7 +38,7 @@ export const getMadeForYouSongs = async (req, res, next) => {
   try {
     const songs = await Song.aggregate([
       {
-        $sample: {size: 4}
+        $sample: { size: 12 }
       },
         {
           $project: {
@@ -60,7 +60,7 @@ export const getTrendingSongs = async (req, res, next) => {
   try {
     const songs = await Song.aggregate([
       {
-        $sample: {size: 4}
+        $sample: { size: 12 }
       },
         {
           $project: {
@@ -77,3 +77,22 @@ export const getTrendingSongs = async (req, res, next) => {
     next(error);
   }
 }
+
+export const searchSongs = async (req, res, next) => {
+  try {
+    const { q } = req.query;
+
+    if (!q) return res.json([]);
+
+    const songs = await Song.find({
+      $or: [
+        { title: { $regex: q, $options: "i" } },
+        { artist: { $regex: q, $options: "i" } },
+      ],
+    }).limit(10);
+
+    res.json(songs);
+  } catch (error) {
+    next(error);
+  }
+};

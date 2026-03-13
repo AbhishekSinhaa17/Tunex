@@ -19,21 +19,32 @@ const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = Math.floor(seconds % 60);
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-}
+};
 
 export const PlaybackControls = () => {
-  const { currentSong, isPlaying, togglePlay, playNext, playPrevious } =
-    usePlayerStore();
+  const {
+    currentSong,
+    isPlaying,
+    togglePlay,
+    playNext,
+    playPrevious,
+    shuffle,
+    repeat,
+    toggleShuffle,
+    toggleRepeat,
+  } = usePlayerStore();
 
-  const [volume, setVolume] = useState(50);
+  const [volume, setVolume] = useState(
+    Number(localStorage.getItem("volume")) || 25,
+  );
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    audioRef.current = document.querySelector("audio");
+    const audio = document.querySelector("audio") as HTMLAudioElement;
+    audioRef.current = audio;
 
-    const audio = audioRef.current;
     if (!audio) return;
 
     const updateTime = () => setCurrentTime(audio.currentTime);
@@ -42,18 +53,18 @@ export const PlaybackControls = () => {
     audio.addEventListener("timeupdate", updateTime);
     audio.addEventListener("loadedmetadata", updateDuration);
 
-    const handleEnded = () => {
-      usePlayerStore.setState({ isPlaying: false });
-    };
-
-    audio.addEventListener("ended", handleEnded);
-
     return () => {
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
-      audio.removeEventListener("ended", handleEnded);
     };
   }, [currentSong]);
+
+  useEffect(() => {
+    const audio = document.querySelector("audio") as HTMLAudioElement;
+    if (audio) {
+      audio.volume = volume / 100;
+    }
+  }, []);
 
   const handleSeek = (value: number[]) => {
     if (audioRef.current) {
@@ -78,7 +89,7 @@ export const PlaybackControls = () => {
                 <div className="font-medium truncate hover:underline cursor-pointer">
                   {currentSong.title}
                 </div>
-                <div className="text-sm to-zinc-400 truncate hover:underline cursor-pointer">
+                <div className="text-sm text-zinc-400 truncate hover:underline cursor-pointer">
                   {currentSong.artist}
                 </div>
               </div>
@@ -92,7 +103,10 @@ export const PlaybackControls = () => {
             <Button
               size="icon"
               variant="ghost"
-              className="hidden sm:inline-flex hover:text-white to-zinc-400"
+              className={`hidden sm:inline-flex ${
+                shuffle ? "text-green-500" : "text-zinc-400"
+              } hover:text-white`}
+              onClick={toggleShuffle}
             >
               <Shuffle className="h-4 w-4" />
             </Button>
@@ -100,7 +114,7 @@ export const PlaybackControls = () => {
             <Button
               size="icon"
               variant="ghost"
-              className="hover:text-white to-zinc-400"
+              className="hover:text-white text-zinc-400"
               onClick={playPrevious}
               disabled={!currentSong}
             >
@@ -131,7 +145,10 @@ export const PlaybackControls = () => {
             <Button
               size="icon"
               variant="ghost"
-              className="hidden sm:inline-flex hover:text-white text-zinc-400"
+              className={`hidden sm:inline-flex ${
+                repeat ? "text-green-500" : "text-zinc-400"
+              } hover:text-white`}
+              onClick={toggleRepeat}
             >
               <Repeat className="h-4 w-4" />
             </Button>
@@ -148,9 +165,7 @@ export const PlaybackControls = () => {
               className="w-full hover:cursor-grab active:cursor-grabbing"
               onValueChange={handleSeek}
             />
-            <div className="text-xs text-zinc-400">
-              {formatTime(duration)}
-            </div>
+            <div className="text-xs text-zinc-400">{formatTime(duration)}</div>
           </div>
         </div>
         {/* volume controls */}
@@ -192,10 +207,14 @@ export const PlaybackControls = () => {
               step={1}
               className="w-24 hover:cursor-grab active:cursor-grabbing"
               onValueChange={(value) => {
-                setVolume(value[0]);
+                const newVolume = value[0];
+                setVolume(newVolume);
+
                 if (audioRef.current) {
-                  audioRef.current.volume = value[0] / 100;
+                  audioRef.current.volume = newVolume / 100;
                 }
+
+                localStorage.setItem("volume", String(newVolume));
               }}
             ></Slider>
           </div>

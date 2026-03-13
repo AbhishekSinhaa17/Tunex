@@ -5,9 +5,16 @@ import SignInOAuthButtons from "./SignInOAuthButtons";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { useMusicStore } from "@/stores/useMusicStore";
+import { useState } from "react";
+import { X } from "lucide-react";
 
 const Topbar = () => {
+  const [query, setQuery] = useState("");
+
   const { isAdmin } = useAuthStore();
+  const { searchSongs } = useMusicStore();
+
   console.log({ isAdmin });
 
   return (
@@ -29,6 +36,32 @@ const Topbar = () => {
         >
           Tunex
         </span>
+      </div>
+
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="Search songs..."
+          value={query}
+          className="bg-zinc-800 px-3 py-2 rounded-md text-sm w-64 outline-none"
+          onChange={(e) => {
+            const value = e.target.value;
+            setQuery(value);
+            searchSongs(value);
+          }}
+        />
+
+        {query && (
+          <button
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white"
+            onClick={() => {
+              setQuery("");
+              searchSongs("");
+            }}
+          >
+            <X size={16} />
+          </button>
+        )}
       </div>
 
       <div className="flex items-center gap-4">

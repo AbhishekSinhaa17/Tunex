@@ -13,6 +13,7 @@ interface MusicStore {
   madeForYouSongs: Song[];
   trendingSongs: Song[];
   stats: stats;
+  searchResults: Song[];
 
   fetchAlbums: () => Promise<void>;
   fetchAlbumById: (id: string) => Promise<void>;
@@ -23,6 +24,7 @@ interface MusicStore {
   fetchSongs: () => Promise<void>;
   deleteSong: (id: string) => Promise<void>;
   deleteAlbum: (id: string) => Promise<void>;
+  searchSongs: (query: string) => Promise<void>;
 }
 
 export const useMusicStore = create<MusicStore>((set) => ({
@@ -34,6 +36,7 @@ export const useMusicStore = create<MusicStore>((set) => ({
   madeForYouSongs: [],
   featuredSongs: [],
   trendingSongs: [],
+  searchResults: [],
   stats: {
     totalSongs: 0,
     totalAlbums: 0,
@@ -173,4 +176,12 @@ export const useMusicStore = create<MusicStore>((set) => ({
       set({ isLoading: false });
     }
   },
+
+  searchSongs: async (query: string) => {
+  if (!query) return set({ searchResults: [] });
+
+  const res = await axiosInstance.get(`/songs/search?q=${query}`);
+
+  set({ searchResults: res.data });
+},
 }));
