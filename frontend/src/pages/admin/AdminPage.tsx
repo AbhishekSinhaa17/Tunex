@@ -7,17 +7,28 @@ import SongsTabContent from "./components/SongsTabContent";
 import AlbumsTabContent from "./components/AlbumsTabContent";
 import { useEffect } from "react";
 import { useMusicStore } from "@/stores/useMusicStore";
+import { useAuth } from "@clerk/clerk-react";
 
 const AdminPage = () => {
   const { isAdmin, isLoading } = useAuthStore();
-
   const { fetchSongs, fetchAlbums, fetchStats } = useMusicStore();
-  
+  const { getToken,isLoaded } = useAuth();
+
   useEffect(() => {
+  if (!isLoaded) return;
+
+  const loadData = async () => {
+    const token = await getToken();
+    if (!token) return;
+
     fetchAlbums();
     fetchSongs();
-    fetchStats();
-  }, [fetchAlbums, fetchSongs, fetchStats]);
+    fetchStats(token);
+  };
+
+  loadData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [isLoaded]);
 
   if (!isAdmin && !isLoading) return <div>Unauthorized</div>;
 

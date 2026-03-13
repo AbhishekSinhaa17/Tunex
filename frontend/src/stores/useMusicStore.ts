@@ -19,7 +19,7 @@ interface MusicStore {
   fetchFeaturedSongs: () => Promise<void>;
   fetchMadeForYouSongs: () => Promise<void>;
   fetchTrendingSongs: () => Promise<void>;
-  fetchStats: () => Promise<void>;
+  fetchStats: (token: string) => Promise<void>;
   fetchSongs: () => Promise<void>;
   deleteSong: (id: string) => Promise<void>;
   deleteAlbum: (id: string) => Promise<void>;
@@ -66,7 +66,7 @@ export const useMusicStore = create<MusicStore>((set) => ({
         songs: state.songs.map((song) =>
           song.albumId === state.albums.find((a) => a._id === id)?.title
             ? { ...song, album: null }
-            : song
+            : song,
         ),
       }));
       toast.success("Album deleted successfully");
@@ -89,17 +89,23 @@ export const useMusicStore = create<MusicStore>((set) => ({
     }
   },
 
-  fetchStats: async () => {
+  fetchStats: async (token: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axiosInstance.get("/stats");
+      const response = await axiosInstance.get("/stats", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = response.data;
-      set({ stats: {
-      totalSongs: data.totalSongs,
-      totalAlbums: data.totalAlbums,
-      totalUsers: data.totalUsers,
-      totalArtists: data.uniqueArtists,
-    } });
+      set({
+        stats: {
+          totalSongs: data.totalSongs,
+          totalAlbums: data.totalAlbums,
+          totalUsers: data.totalUsers,
+          totalArtists: data.uniqueArtists,
+        },
+      });
     } catch (error: any) {
       set({ error: error.message });
     } finally {
@@ -111,7 +117,7 @@ export const useMusicStore = create<MusicStore>((set) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const response = await axiosInstance.get("/albums");
+       const response = await axiosInstance.get("/albums");
       set({ albums: response.data });
     } catch (error: any) {
       set({ error: error.response.data.message });
