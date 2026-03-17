@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════════
+   THEME VARIABLES (unchanged — keep these)
+   ═══════════════════════════════════════════════════════════════ */
 
 @layer base {
   :root {
@@ -60,7 +63,6 @@
   }
 }
 
-
 @layer base {
   * {
     @apply border-border;
@@ -69,6 +71,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   LOGO ANIMATION (unchanged — keep this)
+   ═══════════════════════════════════════════════════════════════ */
 
 @keyframes logo-entry {
   0% {
@@ -87,4 +93,180 @@
 
 .animate-logo-entry {
   animation: logo-entry 0.8s ease-out forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PREMIUM MUSIC APP STYLES (NEW — replaces all old custom CSS)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Base Rendering ────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(139, 92, 246, 0.25),
+    rgba(6, 182, 212, 0.25),
+    rgba(236, 72, 153, 0.25)
+  );
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(139, 92, 246, 0.5),
+    rgba(6, 182, 212, 0.5),
+    rgba(236, 72, 153, 0.5)
+  );
+}
+
+/* ─── Selection ─────────────────────────────────────────────── */
+::selection {
+  background-color: rgba(139, 92, 246, 0.25);
+  color: #fff;
+}
+
+/* ─── Focus Ring ────────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid rgba(6, 182, 212, 0.5);
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+
+/* ─── Shimmer Animation ─────────────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.03) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+/* ─── Float Animation ───────────────────────────────────────── */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ─── Glass Utility ─────────────────────────────────────────── */
+.glass-ultra {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.glass-ultra:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ─── Glow Text ─────────────────────────────────────────────── */
+.text-glow {
+  text-shadow:
+    0 0 20px rgba(139, 92, 246, 0.3),
+    0 0 40px rgba(6, 182, 212, 0.15);
+}
+
+/* ─── Neon Rotating Border ──────────────────────────────────── */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes neon-rotate {
+  0% {
+    --angle: 0deg;
+  }
+  100% {
+    --angle: 360deg;
+  }
+}
+
+.neon-border {
+  animation: neon-rotate 4s linear infinite;
+  border-image: conic-gradient(
+      from var(--angle),
+      #8b5cf6,
+      #06b6d4,
+      #ec4899,
+      #8b5cf6
+    )
+    1;
+}
+
+/* ─── Pulse Glow (for active elements) ──────────────────────── */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 15px rgba(139, 92, 246, 0.15),
+      0 0 30px rgba(6, 182, 212, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 25px rgba(139, 92, 246, 0.25),
+      0 0 50px rgba(6, 182, 212, 0.15);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* ─── Gradient Text Utility ─────────────────────────────────── */
+.text-gradient-premium {
+  background: linear-gradient(135deg, #c4b5fd, #67e8f9, #f9a8d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Card Hover Lift ───────────────────────────────────────── */
+.hover-lift {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.4s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(139, 92, 246, 0.05);
 }

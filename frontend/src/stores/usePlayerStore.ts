@@ -79,21 +79,12 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 
     const songIndex = get().queue.findIndex((s) => s._id === song._id);
 
-    set((state) => {
-      set((state) => ({
-        currentSong: song,
-        currentIndex: songIndex !== -1 ? songIndex : state.currentIndex,
-        isPlaying: true,
-        recentSongs: updateRecentSongs(song, state),
-      }));
-
-      return {
-        currentSong: song,
-        currentIndex: songIndex !== -1 ? songIndex : state.currentIndex,
-        isPlaying: true,
-        recentSongs: updateRecentSongs(song, state),
-      };
-    });
+    set((state) => ({
+      currentSong: song,
+      currentIndex: songIndex !== -1 ? songIndex : state.currentIndex,
+      isPlaying: true,
+      recentSongs: updateRecentSongs(song, state),
+    }));
   },
   togglePlay: () => {
     const willStartPlaying = !get().isPlaying;

@@ -30,8 +30,8 @@ const MainLayout = () => {
 	}, [user?.id, initSocket]);
 
 	return (
-		<div className='h-screen bg-black text-white flex flex-col'>
-			<ResizablePanelGroup direction='horizontal' className='flex-1 flex h-full overflow-hidden p-2'>
+		<div className='h-screen bg-black text-white flex flex-col overflow-hidden'>
+			<ResizablePanelGroup direction='horizontal' className='flex-1 flex h-full overflow-hidden p-2 relative z-10'>
 				<AudioPlayer />
 
 				{/* left sidebar */}
@@ -56,7 +56,9 @@ const MainLayout = () => {
 				)}
 			</ResizablePanelGroup>
 
-			<PlaybackControls />
+			<div className="relative z-30">
+				<PlaybackControls />
+			</div>
 		</div>
 	);
 };
