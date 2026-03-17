@@ -13,7 +13,7 @@ const updateApiToken = (token: string | null) => {
 };
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const location = useLocation(); 
+  const location = useLocation();
 
   const { user, isLoaded, isSignedIn } = useUser();
   const { getToken } = useAuth();
@@ -22,9 +22,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { initSocket, disconnectSocket } = useChatStore();
 
   useEffect(() => {
-    if (location.pathname === "/auth-callback") return;
-
     if (!isLoaded) return;
+
+    if (location.pathname === "/auth-callback") {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
 
     const initAuth = async () => {
       try {
@@ -49,7 +54,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     initAuth();
 
     return () => disconnectSocket();
-  }, [isLoaded, isSignedIn, user, getToken, location.pathname]);
+  }, [isLoaded, isSignedIn, user?.id]);
 
   if (location.pathname === "/auth-callback") {
     return <>{children}</>;
