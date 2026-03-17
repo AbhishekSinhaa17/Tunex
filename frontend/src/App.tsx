@@ -14,15 +14,12 @@ function App() {
     <>
       <Routes>
         <Route
-          path="/sso-callback"
-          element={
-            <AuthenticateWithRedirectCallback
-              signInForceRedirectUrl={"/auth-callback"}
-            />
-          }
+          path="/auth-callback"
+          element={<AuthenticateWithRedirectCallback />}
         />
-        <Route path="/auth-callback" element={<AuthCallbackPage />} />
+
         <Route path="/admin" element={<AdminPage />} />
+
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/chat" element={<ChatPage />} />

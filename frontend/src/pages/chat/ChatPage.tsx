@@ -80,7 +80,9 @@ const MessageBubble = ({
       </motion.div>
 
       {/* Message bubble */}
-      <div className={`flex flex-col ${isCurrentUser ? "items-end" : "items-start"} max-w-[70%]`}>
+      <div
+        className={`flex flex-col ${isCurrentUser ? "items-end" : "items-start"} max-w-[70%]`}
+      >
         <motion.div
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
@@ -120,7 +122,11 @@ const MessageBubble = ({
                       "linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)",
                   }}
                   animate={{ x: ["-200%", "200%"] }}
-                  transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    repeatDelay: 2,
+                  }}
                 />
               </motion.div>
             )}
@@ -262,7 +268,8 @@ const NoConversationPlaceholder = () => (
         No conversation selected
       </h3>
       <p className="text-sm text-zinc-500 leading-relaxed">
-        Choose a friend from the list to start chatting and sharing your favorite music
+        Choose a friend from the list to start chatting and sharing your
+        favorite music
       </p>
     </motion.div>
 
@@ -274,24 +281,26 @@ const NoConversationPlaceholder = () => (
     >
       <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06]">
         <Music2 className="w-3 h-3 text-violet-400" />
-        <span className="text-[10px] font-medium text-zinc-600">Share tracks</span>
+        <span className="text-[10px] font-medium text-zinc-600">
+          Share tracks
+        </span>
       </div>
       <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06]">
         <Send className="w-3 h-3 text-cyan-400" />
-        <span className="text-[10px] font-medium text-zinc-600">Send messages</span>
+        <span className="text-[10px] font-medium text-zinc-600">
+          Send messages
+        </span>
       </div>
     </motion.div>
   </motion.div>
 );
-
 
 // ═══════════════════════════════════════════════════════════════
 // ─── CHAT PAGE ────────────────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════
 const ChatPage = () => {
   const { user } = useUser();
-  const { messages, selectedUser, fetchUsers, fetchMessages } =
-    useChatStore();
+  const { messages, selectedUser, fetchUsers, fetchMessages } = useChatStore();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showTyping] = useState(false);
 
@@ -326,10 +335,8 @@ const ChatPage = () => {
       groups[date].push(message);
       return groups;
     },
-    {}
+    {},
   );
-
-
 
   return (
     <main
