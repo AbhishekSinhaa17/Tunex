@@ -14,7 +14,12 @@ function App() {
       <Routes>
         <Route
           path="/auth-callback"
-          element={<AuthenticateWithRedirectCallback />}
+          element={
+            <AuthenticateWithRedirectCallback
+              afterSignInUrl="/"
+              afterSignUpUrl="/"
+            />
+          }
         />
 
         <Route path="/admin" element={<AdminPage />} />
