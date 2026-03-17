@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -14,7 +13,6 @@ import {
   Trash2,
   Disc3,
   Loader2,
-  AlertCircle,
   Library,
   Play,
 } from "lucide-react";

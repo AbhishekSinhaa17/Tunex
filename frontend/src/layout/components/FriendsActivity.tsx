@@ -6,8 +6,6 @@ import {
   HeadphonesIcon,
   Music,
   Users,
-  Radio,
-  Wifi,
   WifiOff,
 } from "lucide-react";
 import { useEffect, useState } from "react";

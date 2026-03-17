@@ -1,6 +1,6 @@
 import Topbar from "@/components/Topbar";
 import { useMusicStore } from "@/stores/useMusicStore";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import FeaturedSection from "./components/FeaturedSection";
 import SectionGrid from "./components/SectionGrid";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
@@ -10,7 +10,6 @@ import {
   AnimatePresence,
   useMotionValue,
   useSpring,
-  useTransform,
 } from "framer-motion";
 
 // ═══════════════════════════════════════════════════════════════

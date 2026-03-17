@@ -1,5 +1,4 @@
 import PlaylistSkeleton from "@/components/skeletons/PlaylistSkeleton";
-import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SignedIn } from "@clerk/clerk-react";
 import { ScrollArea } from "@/components/ui/scroll-area";

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { useMusicStore } from "@/stores/useMusicStore";
 import { usePlayerStore } from "@/stores/usePlayerStore";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,9 +9,7 @@ import {
   Download,
   Share2,
   Shuffle,
-  Plus,
   Music2,
-  Calendar,
   Disc3,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -419,7 +416,7 @@ const AlbumPage = () => {
       />
 
       <div className="relative z-10 flex flex-col h-full">
-        <AlbumHeader album={currentAlbum} onPlay={handlePlayAlbum} isPlaying={isAlbumPlaying} />
+        <AlbumHeader album={currentAlbum} onPlay={handlePlayAlbum} isPlaying={isAlbumPlaying ? isAlbumPlaying : false} />
 
         <div className="flex-1 min-h-0 relative">
           <div

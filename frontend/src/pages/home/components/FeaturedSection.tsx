@@ -9,7 +9,7 @@ import {
   Disc3,
   Sparkles,
 } from "lucide-react";
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const FeaturedSection = () => {
   const { featuredSongs, isFeaturedLoading, error } = useMusicStore();

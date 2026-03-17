@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import MessageInput from "./components/MessageInput";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Sparkles, Music2, Send, ArrowLeft } from "lucide-react";
+import { MessageCircle, Sparkles, Music2, Send } from "lucide-react";
 
 const formatTime = (date: string) => {
   return new Date(date).toLocaleTimeString("en-US", {
@@ -284,23 +284,6 @@ const NoConversationPlaceholder = () => (
   </motion.div>
 );
 
-// ═══════════════════════════════════════════════════════════════
-// ─── BACK BUTTON ──────────────────────────────────────────────
-// ═══════════════════════════════════════════════════════════════
-const BackButton = ({ onClick }: { onClick: () => void }) => (
-  <motion.button
-    initial={{ opacity: 0, x: -10 }}
-    animate={{ opacity: 1, x: 0 }}
-    whileHover={{ scale: 1.05, x: -2 }}
-    whileTap={{ scale: 0.95 }}
-    onClick={onClick}
-    className="lg:hidden p-2 rounded-xl
-               bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.08]
-               text-zinc-400 hover:text-white transition-all duration-300"
-  >
-    <ArrowLeft className="w-5 h-5" />
-  </motion.button>
-);
 
 // ═══════════════════════════════════════════════════════════════
 // ─── CHAT PAGE ────────────────────────────────────────────────
