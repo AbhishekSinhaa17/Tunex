@@ -7,8 +7,11 @@ import AlbumPage from "./pages/album/AlbumPage";
 import AdminPage from "./pages/admin/AdminPage";
 import { Toaster } from "react-hot-toast";
 import NotFoundPage from "./pages/404/NotFoundPage";
+import { Navigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 function App() {
+  const { isAdmin } = useAuthStore();
   return (
     <>
       <Routes>
@@ -22,7 +25,10 @@ function App() {
           }
         />
 
-        <Route path="/admin" element={<AdminPage />} />
+        <Route
+          path="/admin"
+          element={isAdmin ? <AdminPage /> : <Navigate to="/" />}
+        />
 
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />

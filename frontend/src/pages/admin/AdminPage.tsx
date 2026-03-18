@@ -11,10 +11,15 @@ import { useAuth } from "@clerk/clerk-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const AdminPage = () => {
-  const { isAdmin, isLoading } = useAuthStore();
+  const { isAdmin, isLoading, checkAdminStatus } = useAuthStore();
   const { fetchSongs, fetchAlbums, fetchStats } = useMusicStore();
   const { getToken, isLoaded } = useAuth();
   const [activeTab, setActiveTab] = useState("songs");
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    checkAdminStatus();
+  }, [isLoaded]);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -23,14 +28,15 @@ const AdminPage = () => {
       const token = await getToken();
       if (!token) return;
 
-      fetchAlbums();
-      fetchSongs();
-      fetchStats(token);
+      if (isAdmin) {
+        fetchAlbums();
+        fetchSongs();
+        fetchStats(token);
+      }
     };
 
     loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded]);
+  }, [isLoaded, isAdmin]);
 
   if (isLoading) {
     return (
@@ -201,7 +207,11 @@ const AdminPage = () => {
                     <motion.div
                       layoutId="activeTabGlow"
                       className="absolute inset-0 rounded-lg bg-emerald-500/5"
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                      }}
                     />
                   )}
                 </TabsTrigger>
@@ -229,7 +239,11 @@ const AdminPage = () => {
                     <motion.div
                       layoutId="activeTabGlow"
                       className="absolute inset-0 rounded-lg bg-violet-500/5"
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                      }}
                     />
                   )}
                 </TabsTrigger>
