@@ -61,14 +61,14 @@ const CursorSpotlight = () => {
 // ─── FLOATING PARTICLES ───────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════
 const FloatingParticles = () => {
-  const particles = Array.from({ length: 30 }, (_, i) => ({
+  const particles = Array.from({ length: 15 }, (_, i) => ({
     id: i,
     x: Math.random() * 100,
     y: Math.random() * 100,
-    size: Math.random() * 3 + 1,
+    size: Math.random() * 2 + 1,
     duration: Math.random() * 15 + 10,
     delay: Math.random() * 5,
-    opacity: Math.random() * 0.3 + 0.1,
+    opacity: Math.random() * 0.2 + 0.1,
   }));
 
   return (
@@ -107,13 +107,13 @@ const FloatingParticles = () => {
 // ═══════════════════════════════════════════════════════════════
 const FloatingNotes = () => {
   const notes = ["♪", "♫", "♬", "♩", "♭", "♮"];
-  const items = Array.from({ length: 8 }, (_, i) => ({
+  const items = Array.from({ length: 5 }, (_, i) => ({
     id: i,
     note: notes[i % notes.length],
     x: Math.random() * 100,
     duration: Math.random() * 12 + 8,
     delay: Math.random() * 6,
-    size: Math.random() * 14 + 10,
+    size: Math.random() * 12 + 10,
   }));
 
   return (
@@ -442,9 +442,7 @@ const HomePage = () => {
   };
 
   const {
-    fetchFeaturedSongs,
-    fetchMadeForYouSongs,
-    fetchTrendingSongs,
+    fetchHomeData,
     isMadeForYouLoading,
     isTrendingLoading,
     madeForYouSongs,
@@ -456,10 +454,8 @@ const HomePage = () => {
   const { recentSongs, initializeQueue } = usePlayerStore();
 
   useEffect(() => {
-    fetchFeaturedSongs();
-    fetchMadeForYouSongs();
-    fetchTrendingSongs();
-  }, [fetchFeaturedSongs, fetchMadeForYouSongs, fetchTrendingSongs]);
+    fetchHomeData();
+  }, [fetchHomeData]);
 
   useEffect(() => {
     if (

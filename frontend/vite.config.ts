@@ -10,8 +10,28 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  server:{
+  server: {
     port: 3000,
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "clerk-vendor": ["@clerk/clerk-react"],
+          "framer-vendor": ["framer-motion"],
+          "ui-vendor": [
+            "@radix-ui/react-avatar",
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-scroll-area",
+            "@radix-ui/react-select",
+            "@radix-ui/react-slider",
+            "@radix-ui/react-slot",
+            "@radix-ui/react-tabs",
+            "lucide-react",
+          ],
+        },
+      },
+    },
   },
 })
 

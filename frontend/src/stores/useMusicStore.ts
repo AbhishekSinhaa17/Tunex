@@ -31,6 +31,7 @@ interface MusicStore {
   fetchTrendingSongs: () => Promise<void>;
   fetchStats: (token: string) => Promise<void>;
   fetchSongs: () => Promise<void>;
+  fetchHomeData: () => Promise<void>;
   deleteSong: (id: string) => Promise<void>;
   deleteAlbum: (id: string) => Promise<void>;
   searchSongs: (query: string) => Promise<void>;
@@ -192,6 +193,30 @@ export const useMusicStore = create<MusicStore>((set) => ({
       set({ error: error.response.data.message });
     } finally {
       set({ isTrendingLoading: false });
+    }
+  },
+  fetchHomeData: async () => {
+    set({
+      isFeaturedLoading: true,
+      isMadeForYouLoading: true,
+      isTrendingLoading: true,
+      error: null,
+    });
+    try {
+      const response = await axiosInstance.get("/home");
+      set({
+        featuredSongs: response.data.featuredSongs,
+        madeForYouSongs: response.data.madeForYouSongs,
+        trendingSongs: response.data.trendingSongs,
+      });
+    } catch (error: any) {
+      set({ error: error.response?.data?.message || "Error fetching home data" });
+    } finally {
+      set({
+        isFeaturedLoading: false,
+        isMadeForYouLoading: false,
+        isTrendingLoading: false,
+      });
     }
   },
   searchSongs: async (query: string) => {
