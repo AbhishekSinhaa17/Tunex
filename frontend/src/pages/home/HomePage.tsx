@@ -339,8 +339,8 @@ const NeonLine = ({ delay = 0 }: { delay?: number }) => (
 // ─── STATS BAR ────────────────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════
 const StatsBar = () => {
-  const { featuredSongs, madeForYouSongs, trendingSongs } = useMusicStore();
-  const totalSongs = featuredSongs.length + madeForYouSongs.length + trendingSongs.length;
+  const { featuredSongs = [], madeForYouSongs = [], trendingSongs = [] } = useMusicStore();
+  const totalSongs = (featuredSongs?.length || 0) + (madeForYouSongs?.length || 0) + (trendingSongs?.length || 0);
 
   const stats = [
     { label: "Tracks", value: totalSongs, icon: "🎵" },
@@ -459,9 +459,9 @@ const HomePage = () => {
 
   useEffect(() => {
     if (
-      madeForYouSongs.length > 0 &&
-      featuredSongs.length > 0 &&
-      trendingSongs.length > 0
+      madeForYouSongs?.length > 0 &&
+      featuredSongs?.length > 0 &&
+      trendingSongs?.length > 0
     ) {
       const allSongs = [...featuredSongs, ...madeForYouSongs, ...trendingSongs];
       initializeQueue(allSongs);
@@ -581,7 +581,7 @@ const HomePage = () => {
                 <SectionGrid
                   title="Made For You"
                   songs={madeForYouSongs}
-                  isLoading={isMadeForYouLoading && madeForYouSongs.length === 0}
+                  isLoading={isMadeForYouLoading && (madeForYouSongs?.length || 0) === 0}
                 />
               </RevealSection>
 
@@ -591,7 +591,7 @@ const HomePage = () => {
                 <SectionGrid
                   title="Trending"
                   songs={trendingSongs}
-                  isLoading={isTrendingLoading && trendingSongs.length === 0}
+                  isLoading={isTrendingLoading && (trendingSongs?.length || 0) === 0}
                 />
               </RevealSection>
             </div>
