@@ -17,12 +17,21 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   checkAdminStatus: async () => {
     set({ isLoading: true, error: null });
+    
+    // Create an abort controller for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
     try {
-      const response = await axiosInstance.get("/admin/check");
+      const response = await axiosInstance.get("/admin/check", {
+        signal: controller.signal
+      });
       set({ isAdmin: response.data.admin });
     } catch (error: any) {
+      console.warn("Admin check failed or timed out", error.message);
       set({ isAdmin: false });
     } finally {
+      clearTimeout(timeoutId);
       set({ isLoading: false });
     }
   },

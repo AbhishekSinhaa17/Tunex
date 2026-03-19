@@ -37,7 +37,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const token = await getToken();
           updateApiToken(token);
 
-          await checkAdminStatus();
+          // We check admin status separately
+          // If we are on the admin path, we MUST wait for it to prevent flash of redirect
+          if (location.pathname.startsWith("/admin")) {
+            await checkAdminStatus();
+          } else {
+            // Otherwise, we can do it in the background
+            checkAdminStatus();
+          }
 
           if (user?.id) initSocket(user.id);
         } else {
