@@ -1,23 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
-import { connectDB } from "./lib/db.js";
 import { clerkMiddleware } from "@clerk/express";
-import fileUpload from "express-fileupload";
 import path from "path";
 import cors from "cors";
 import { createServer } from "http";
-import cron from "node-cron";
-import fs from "fs";
-
-import { initializeSocket } from "./lib/socket.js";
-
-import userRoutes from "./routes/user.route.js";
-import adminRoutes from "./routes/admin.route.js";
-import authRoutes from "./routes/auth.route.js";
-import songsRoutes from "./routes/song.route.js";
-import albumRoutes from "./routes/album.route.js";
-import statRoutes from "./routes/stat.route.js";
-import homeRoutes from "./routes/home.route.js";
+import https from "https";
 
 dotenv.config();
 
@@ -26,11 +13,10 @@ const __dirname = path.resolve();
 const PORT = process.env.PORT;
 
 const httpServer = createServer(app);
-initializeSocket(httpServer);
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://localhost:5173",   
+  "http://localhost:5173",
   "https://tunex-rsmw.vercel.app",
 ];
 
@@ -48,50 +34,120 @@ app.use(
 );
 
 app.use(express.json());
-app.use(clerkMiddleware()); // this will add the req.auth object to the request, which contains the userId and other information about the authenticated user
-app.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: path.join(__dirname, "tmp"),
-    createParentPath: true,
-    limits: { fileSize: 10 * 1024 * 1024 }, // 50 MB maximum file size
-  })
-);
+app.use(clerkMiddleware());
 
-const tempDir = path.join(process.cwd(), "tmp");
-//cron jobs can be added here
-// delete those files that are older than 1 hour
-cron.schedule("0 * * * *", () => {
-  if (fs.existsSync(tempDir)) {
-    fs.readdir(tempDir, (err, files) => {
-      if (err) {
-        console.error("Error reading temp directory:", err);
-        return;
-      }
-      for (const file of files) {
-        fs.unlink(path.join(tempDir, file), (err) => {});
-      }
-    });
-  }
+// Health check — responds instantly, no DB needed
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
 });
 
-app.use("/api/users", userRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/songs", songsRoutes);
-app.use("/api/albums", albumRoutes);
-app.use("/api/stats", statRoutes);
-app.use("/api/home", homeRoutes);
+// ── Lazy-loaded middleware & routes ──────────────────────────────────
+// These are loaded on first request instead of at startup, shaving
+// seconds off the cold-start time.
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+let initialized = false;
 
-  app.get("/*splat", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../frontend/dist/index.html"));
+async function lazyInit(req, res, next) {
+  if (initialized) return next();
+  initialized = true;
+
+  const startTime = Date.now();
+
+  // Dynamic imports — only loaded when first request arrives
+  const [
+    { default: fileUpload },
+    { default: cron },
+    { default: fs },
+    { connectDB },
+    { initializeSocket },
+    { default: userRoutes },
+    { default: adminRoutes },
+    { default: authRoutes },
+    { default: songsRoutes },
+    { default: albumRoutes },
+    { default: statRoutes },
+    { default: homeRoutes },
+  ] = await Promise.all([
+    import("express-fileupload"),
+    import("node-cron"),
+    import("fs"),
+    import("./lib/db.js"),
+    import("./lib/socket.js"),
+    import("./routes/user.route.js"),
+    import("./routes/admin.route.js"),
+    import("./routes/auth.route.js"),
+    import("./routes/song.route.js"),
+    import("./routes/album.route.js"),
+    import("./routes/stat.route.js"),
+    import("./routes/home.route.js"),
+  ]);
+
+  // File upload middleware
+  app.use(
+    fileUpload({
+      useTempFiles: true,
+      tempFileDir: path.join(__dirname, "tmp"),
+      createParentPath: true,
+      limits: { fileSize: 10 * 1024 * 1024 },
+    })
+  );
+
+  // Mount routes
+  app.use("/api/users", userRoutes);
+  app.use("/api/admin", adminRoutes);
+  app.use("/api/auth", authRoutes);
+  app.use("/api/songs", songsRoutes);
+  app.use("/api/albums", albumRoutes);
+  app.use("/api/stats", statRoutes);
+  app.use("/api/home", homeRoutes);
+
+  // Serve frontend in production
+  if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "../frontend/dist")));
+    app.get("/*splat", (req, res) => {
+      res.sendFile(path.resolve(__dirname, "../frontend/dist/index.html"));
+    });
+  }
+
+  // Connect DB + Socket.io in parallel
+  await Promise.all([
+    connectDB(),
+    Promise.resolve(initializeSocket(httpServer)),
+  ]);
+
+  // Temp file cleanup cron (every hour)
+  const tempDir = path.join(process.cwd(), "tmp");
+  cron.schedule("0 * * * *", () => {
+    if (fs.existsSync(tempDir)) {
+      fs.readdir(tempDir, (err, files) => {
+        if (err) return;
+        for (const file of files) {
+          fs.unlink(path.join(tempDir, file), () => {});
+        }
+      });
+    }
   });
+
+  // Self-ping to prevent Render free-tier cold starts (every 14 minutes)
+  const RENDER_URL = "https://tunex.onrender.com";
+  cron.schedule("*/14 * * * *", () => {
+    https
+      .get(`${RENDER_URL}/api/health`, (res) => {
+        console.log(`Keep-alive ping: ${res.statusCode}`);
+      })
+      .on("error", (err) => {
+        console.error("Keep-alive ping failed:", err.message);
+      });
+  });
+
+  console.log(`Lazy init completed in ${Date.now() - startTime}ms`);
+  next();
 }
 
-//error handler
+// Apply lazy initializer to all API routes (except /api/health)
+app.use("/api", lazyInit);
+
+// Error handler
 app.use((err, req, res, next) => {
   res.status(500).json({
     message:
@@ -101,7 +157,7 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Start server IMMEDIATELY — don't wait for DB
 httpServer.listen(PORT, () => {
-  console.log("Server is running on port" + PORT);
-  connectDB();
+  console.log("Server is running on port " + PORT);
 });
