@@ -20,14 +20,14 @@ const MobileNav = () => {
     <>
       <AnimatePresence>
         {isLibraryOpen && (
-          <>
+          <motion.div key="library-drawer" className="md:hidden">
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsLibraryOpen(false)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-md z-[60] md:hidden"
+              className="fixed inset-0 bg-black/80 backdrop-blur-md z-[60]"
             />
             {/* Drawer */}
             <motion.div
@@ -35,7 +35,7 @@ const MobileNav = () => {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 h-[85vh] bg-[#0c0c14] rounded-t-[40px] z-[70] md:hidden overflow-hidden border-t border-white/10 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] flex flex-col"
+              className="fixed bottom-0 left-0 right-0 h-[85vh] bg-[#0c0c14] rounded-t-[40px] z-[70] overflow-hidden border-t border-white/10 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] flex flex-col"
             >
               {/* Handle bar */}
               <div className="w-12 h-1.5 bg-white/10 rounded-full mx-auto mt-4 mb-2 flex-shrink-0" />
@@ -66,7 +66,7 @@ const MobileNav = () => {
                 <LeftSidebar isMobileDrawer />
               </div>
             </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
 

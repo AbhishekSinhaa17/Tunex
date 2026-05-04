@@ -340,7 +340,7 @@ const ChatPage = () => {
 
   return (
     <main
-      className="h-full rounded-xl overflow-hidden relative"
+      className="flex-1 flex flex-col min-h-0 rounded-xl overflow-hidden relative"
       style={{
         background:
           "linear-gradient(180deg, rgba(12,10,26,0.95) 0%, rgba(8,8,14,0.98) 100%)",
@@ -367,10 +367,10 @@ const ChatPage = () => {
 
       <div className="flex-1 min-h-0 relative z-10 flex flex-col">
         {/* Mobile: Toggle between list and chat */}
-        <div className="lg:hidden h-full flex flex-col">
+        <div className="lg:hidden flex-1 min-h-0 flex flex-col">
           {selectedUser ? (
             // Chat view
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col flex-1 min-h-0">
               {/* Header with back button */}
               <div className="flex-shrink-0">
                 <ChatHeader />

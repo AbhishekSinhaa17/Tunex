@@ -8,7 +8,7 @@ const DashboardStats = () => {
   const { stats } = useMusicStore();
 
   useEffect(() => {
-    console.log("📊 stats kya aa raha hai:", stats);
+    // Stats loaded
   }, [stats]);
 
   const statsData = [

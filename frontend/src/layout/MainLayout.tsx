@@ -37,7 +37,7 @@ const MainLayout = () => {
 				<AudioPlayer />
 
 				{isMobile ? (
-					<main className='flex-1 overflow-hidden rounded-lg mb-[180px] sm:mb-0'>
+					<main className='w-full h-[calc(100vh-220px)] overflow-hidden rounded-lg flex flex-col'>
 						<Outlet />
 					</main>
 				) : (

@@ -246,44 +246,45 @@ const AdminPage = () => {
                       }}
                     />
                   )}
-                </TabsTrigger>
               </TabsList>
             </div>
 
             {/* Tab Content with AnimatePresence */}
             <AnimatePresence mode="wait">
-              <TabsContent value="songs" key="songs">
-                <motion.div
-                  initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
-                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative"
-                >
-                  {/* Card wrapper with glassmorphism */}
-                  <div className="relative rounded-2xl bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/50 p-6 shadow-2xl shadow-black/20">
-                    {/* Top accent line */}
-                    <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
-                    <SongsTabContent />
-                  </div>
-                </motion.div>
-              </TabsContent>
-
-              <TabsContent value="albums" key="albums">
-                <motion.div
-                  initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
-                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative"
-                >
-                  <div className="relative rounded-2xl bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/50 p-6 shadow-2xl shadow-black/20">
-                    {/* Top accent line */}
-                    <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
-                    <AlbumsTabContent />
-                  </div>
-                </motion.div>
-              </TabsContent>
+              {activeTab === "songs" ? (
+                <TabsContent value="songs" key="songs" forceMount>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    className="relative"
+                  >
+                    {/* Card wrapper with glassmorphism */}
+                    <div className="relative rounded-2xl bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/50 p-6 shadow-2xl shadow-black/20">
+                      {/* Top accent line */}
+                      <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
+                      <SongsTabContent />
+                    </div>
+                  </motion.div>
+                </TabsContent>
+              ) : (
+                <TabsContent value="albums" key="albums" forceMount>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    className="relative"
+                  >
+                    <div className="relative rounded-2xl bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/50 p-6 shadow-2xl shadow-black/20">
+                      {/* Top accent line */}
+                      <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
+                      <AlbumsTabContent />
+                    </div>
+                  </motion.div>
+                </TabsContent>
+              )}
             </AnimatePresence>
           </Tabs>
         </motion.div>
