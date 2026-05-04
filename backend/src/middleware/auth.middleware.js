@@ -11,10 +11,12 @@ export const protectRoute = async (req, res, next) => {
 export const requireAdmin = async (req, res, next) => {
   try {
     const currentUser = await clerkClient.users.getUser(req.auth.userId);
-    const isAdmin =
-      process.env.ADMIN_EMAIL === currentUser.primaryEmailAddress?.emailAddress;
+    const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+    const userEmail = currentUser.primaryEmailAddress?.emailAddress?.trim().toLowerCase();
 
-    if (!isAdmin) {
+    console.log("Admin Check - Required:", adminEmail, "| User:", userEmail);
+
+    if (adminEmail !== userEmail) {
       return res
         .status(403)
         .json({ message: "unauthorized - you must be an admin" });
@@ -22,6 +24,7 @@ export const requireAdmin = async (req, res, next) => {
 
     next();
   } catch (error) {
+    console.error("Error in requireAdmin:", error);
     next(error);
   }
 };
