@@ -63,21 +63,21 @@ const NowPlayingMini = () => {
 
   if (!currentSong) {
     return (
-      <div className="hidden sm:flex items-center gap-4 min-w-[180px] w-[30%]">
+      <div className="flex items-center gap-3 min-w-0 sm:min-w-[180px] sm:w-[30%]">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="flex items-center gap-3 text-zinc-600"
+          className="flex items-center gap-2 sm:gap-3 text-zinc-600"
         >
           <div
-            className="w-14 h-14 rounded-xl bg-white/[0.03] border border-white/[0.06]
+            className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-white/[0.03] border border-white/[0.06]
                        flex items-center justify-center"
           >
-            <Music2 className="w-5 h-5 text-zinc-700" />
+            <Music2 className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-700" />
           </div>
-          <div>
-            <p className="text-sm font-medium text-zinc-600">No track</p>
-            <p className="text-xs text-zinc-700">Select a song to play</p>
+          <div className="min-w-0">
+            <p className="text-xs sm:text-sm font-medium text-zinc-600 truncate">No track</p>
+            <p className="text-[10px] sm:text-xs text-zinc-700 truncate">Select a song</p>
           </div>
         </motion.div>
       </div>
@@ -88,7 +88,7 @@ const NowPlayingMini = () => {
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="hidden sm:flex items-center gap-4 min-w-[180px] w-[30%]"
+      className="flex items-center gap-3 sm:gap-4 min-w-0 sm:min-w-[180px] sm:w-[30%]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -104,7 +104,7 @@ const NowPlayingMini = () => {
         />
 
         <motion.div
-          className="relative w-14 h-14 rounded-xl overflow-hidden border border-white/[0.08]
+          className="relative w-10 h-10 sm:w-14 sm:h-14 rounded-xl overflow-hidden border border-white/[0.08]
                      shadow-lg shadow-black/20"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.3 }}
@@ -313,11 +313,11 @@ const ProgressBar = ({
 
   return (
     <div
-      className="hidden sm:flex items-center gap-3 w-full max-w-[600px]"
+      className="flex items-center gap-2 sm:gap-3 w-full max-w-full sm:max-w-[600px]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <span className="text-[11px] font-mono text-zinc-500 w-10 text-right tabular-nums">
+      <span className="hidden min-[480px]:block text-[10px] sm:text-[11px] font-mono text-zinc-500 w-8 sm:w-10 text-right tabular-nums">
         {formatTime(currentTime)}
       </span>
 
@@ -372,7 +372,7 @@ const ProgressBar = ({
         </AnimatePresence>
       </div>
 
-      <span className="text-[11px] font-mono text-zinc-600 w-10 tabular-nums">
+      <span className="hidden min-[480px]:block text-[10px] sm:text-[11px] font-mono text-zinc-600 w-8 sm:w-10 tabular-nums">
         {formatTime(duration)}
       </span>
     </div>
@@ -610,11 +610,12 @@ export const PlaybackControls = () => {
       )}
 
       <div className="flex justify-between items-center h-full max-w-[1800px] mx-auto relative">
-        {/* ─── Now Playing Mini ─── */}
-        <NowPlayingMini />
+        <div className="flex-shrink-0 w-auto sm:w-[30%]">
+          <NowPlayingMini />
+        </div>
 
         {/* ─── Player Controls ─── */}
-        <div className="flex flex-col items-center gap-2 flex-1 max-w-full sm:max-w-[45%]">
+        <div className="flex flex-col items-center gap-1 sm:gap-2 flex-1 min-w-0">
           {/* Control buttons */}
           <div className="flex items-center gap-1 sm:gap-2">
             <ControlButton
@@ -654,11 +655,13 @@ export const PlaybackControls = () => {
           </div>
 
           {/* Progress bar */}
-          <ProgressBar
-            currentTime={currentTime}
-            duration={duration}
-            onSeek={handleSeek}
-          />
+          <div className="w-full px-2">
+            <ProgressBar
+              currentTime={currentTime}
+              duration={duration}
+              onSeek={handleSeek}
+            />
+          </div>
         </div>
 
         {/* ─── Volume & Extra Controls ─── */}

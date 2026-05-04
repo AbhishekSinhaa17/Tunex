@@ -365,7 +365,7 @@ const ChatPage = () => {
         <Topbar />
       </div>
 
-      <div className="h-[calc(100vh-180px)] relative z-10 flex flex-col">
+      <div className="flex-1 min-h-0 relative z-10 flex flex-col">
         {/* Mobile: Toggle between list and chat */}
         <div className="lg:hidden h-full flex flex-col">
           {selectedUser ? (

@@ -13,6 +13,7 @@ import { useMusicStore } from "@/stores/useMusicStore";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePlayerStore } from "@/stores/usePlayerStore";
+import { useUIStore } from "@/stores/useUIStore";
 
 // ═══════════════════════════════════════════════════════════════
 // ─── NAV LINK ─────────────────────────────────────────────────
@@ -23,12 +24,14 @@ const NavLink = ({
   label,
   isActive,
   index,
+  isMobileDrawer,
 }: {
   to: string;
   icon: React.ElementType;
   label: string;
   isActive: boolean;
   index: number;
+  isMobileDrawer?: boolean;
 }) => (
   <motion.div
     initial={{ opacity: 0, x: -20 }}
@@ -102,7 +105,7 @@ const NavLink = ({
           )}
         </motion.div>
 
-        <span className="hidden md:block text-sm font-semibold tracking-tight">
+        <span className={cn("text-sm font-semibold tracking-tight", !isMobileDrawer && "hidden md:block")}>
           {label}
         </span>
       </div>
@@ -116,9 +119,11 @@ const NavLink = ({
 const AlbumCard = ({
   album,
   index,
+  isMobileDrawer,
 }: {
   album: any;
   index: number;
+  isMobileDrawer?: boolean;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { currentSong, isPlaying } = usePlayerStore();
@@ -144,6 +149,11 @@ const AlbumCard = ({
         className="block group relative"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() => {
+          if (isMobileDrawer) {
+            useUIStore.getState().setIsLibraryOpen(false);
+          }
+        }}
       >
         <AnimatePresence>
           {isActive && (
@@ -244,7 +254,7 @@ const AlbumCard = ({
             )}
           </div>
 
-          <div className="flex-1 min-w-0 hidden md:block">
+          <div className={cn("flex-1 min-w-0", !isMobileDrawer && "hidden md:block")}>
             <motion.p
               className={cn(
                 "text-sm font-semibold truncate transition-colors duration-300",
@@ -261,7 +271,7 @@ const AlbumCard = ({
           </div>
 
           <motion.div
-            className="hidden md:flex flex-shrink-0"
+            className={cn("flex-shrink-0", !isMobileDrawer && "hidden md:flex")}
             initial={{ opacity: 0, x: -5 }}
             animate={{
               opacity: isHovered ? 1 : 0,
@@ -310,7 +320,7 @@ const SidebarDivider = () => (
 // ═══════════════════════════════════════════════════════════════
 // ─── LEFT SIDEBAR ─────────────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════
-const LeftSidebar = () => {
+const LeftSidebar = ({ isMobileDrawer }: { isMobileDrawer?: boolean }) => {
   const { albums, fetchAlbums, isAlbumsLoading } = useMusicStore();
   const location = useLocation();
 
@@ -322,19 +332,24 @@ const LeftSidebar = () => {
 
   return (
     <div
-      className="h-full flex flex-col rounded-xl overflow-hidden relative z-20"
-      style={{
+      className={cn(
+        "h-full flex flex-col rounded-xl overflow-hidden relative z-20",
+        !isMobileDrawer && "bg-gradient-to-b from-[#0c0a1a] to-[#08080e]"
+      )}
+      style={!isMobileDrawer ? {
         background:
           "linear-gradient(180deg, rgba(12,10,26,0.95) 0%, rgba(8,8,14,0.98) 100%)",
-      }}
+      } : {}}
     >
       {/* Subtle border glow */}
-      <div
-        className="absolute inset-0 rounded-xl pointer-events-none z-0"
-        style={{
-          border: "1px solid rgba(255,255,255,0.04)",
-        }}
-      />
+      {!isMobileDrawer && (
+        <div
+          className="absolute inset-0 rounded-xl pointer-events-none z-0"
+          style={{
+            border: "1px solid rgba(255,255,255,0.04)",
+          }}
+        />
+      )}
 
       {/* Ambient glow at top */}
       <div
@@ -346,40 +361,43 @@ const LeftSidebar = () => {
       />
 
       {/* ─── Navigation ─── */}
-      <div className="px-3 pt-4 pb-3 relative z-10">
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="hidden md:block text-[10px] font-bold uppercase tracking-[0.15em] 
-                     text-zinc-600 px-3 mb-2"
-        >
-          Menu
-        </motion.p>
+      {!isMobileDrawer && (
+        <div className="px-3 pt-4 pb-3 relative z-10">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            className={cn("text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600 px-3 mb-2", !isMobileDrawer && "hidden md:block")}
+          >
+            Menu
+          </motion.p>
 
-        <div className="space-y-0.5">
-          {navItems.map((item, i) => (
-            <NavLink
-              key={item.to}
-              {...item}
-              isActive={location.pathname === item.to}
-              index={i}
-            />
-          ))}
+          <div className="space-y-0.5">
+            {navItems.map((item, i) => (
+              <NavLink
+                key={item.to}
+                {...item}
+                isActive={location.pathname === item.to}
+                index={i}
+                isMobileDrawer={isMobileDrawer}
+              />
+            ))}
 
-          <SignedIn>
-            <NavLink
-              to="/chat"
-              icon={MessageCircle}
-              label="Messages"
-              isActive={location.pathname === "/chat"}
-              index={navItems.length}
-            />
-          </SignedIn>
+            <SignedIn>
+              <NavLink
+                to="/chat"
+                icon={MessageCircle}
+                label="Messages"
+                isActive={location.pathname === "/chat"}
+                index={navItems.length}
+                isMobileDrawer={isMobileDrawer}
+              />
+            </SignedIn>
+          </div>
         </div>
-      </div>
+      )}
 
-      <SidebarDivider />
+      {!isMobileDrawer && <SidebarDivider />}
 
       {/* ─── Library Section ─── */}
       <div className="flex-1 px-3 py-3 overflow-hidden relative z-10 flex flex-col min-h-0">
@@ -397,7 +415,7 @@ const LeftSidebar = () => {
             >
               <Library className="w-3.5 h-3.5 text-violet-400" />
             </motion.div>
-            <span className="hidden md:block text-xs font-bold uppercase tracking-[0.12em] text-zinc-400">
+            <span className={cn("text-xs font-bold uppercase tracking-[0.12em] text-zinc-400", !isMobileDrawer && "hidden md:block")}>
               Playlists
             </span>
           </motion.div>
@@ -406,9 +424,7 @@ const LeftSidebar = () => {
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.5, type: "spring", stiffness: 300 }}
-            className="hidden md:flex px-2 py-0.5 rounded-md text-[10px] font-bold
-                       text-zinc-500 bg-white/[0.04] border border-white/[0.06]
-                       tabular-nums"
+            className={cn("px-2 py-0.5 rounded-md text-[10px] font-bold text-zinc-500 bg-white/[0.04] border border-white/[0.06] tabular-nums", !isMobileDrawer && "hidden md:flex")}
           >
             {albums.length}
           </motion.span>
@@ -423,7 +439,7 @@ const LeftSidebar = () => {
               ) : (
                 <AnimatePresence>
                   {albums.map((album, index) => (
-                    <AlbumCard key={album._id} album={album} index={index} />
+                    <AlbumCard key={album._id} album={album} index={index} isMobileDrawer={isMobileDrawer} />
                   ))}
                 </AnimatePresence>
               )}

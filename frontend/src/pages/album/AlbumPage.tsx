@@ -11,10 +11,12 @@ import {
   Shuffle,
   Music2,
   Disc3,
+  ChevronLeft,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useUIStore } from "@/stores/useUIStore";
 
 export const formatDuration = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
@@ -84,8 +86,8 @@ const AlbumHeader = ({
   );
 
   return (
-    <div className="relative px-6 pt-6 pb-6">
-      <div className="flex gap-6 items-end">
+    <div className="relative px-4 sm:px-6 pt-4 sm:pt-6 pb-6">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center sm:items-end text-center sm:text-left">
         {/* Album Artwork - SMALLER */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -101,7 +103,7 @@ const AlbumHeader = ({
             }}
           />
 
-          <div className="relative w-48 h-48 sm:w-56 sm:h-56">
+          <div className="relative w-40 h-40 sm:w-56 sm:h-56">
             <motion.div
               className="w-full h-full rounded-2xl overflow-hidden shadow-2xl"
               whileHover={{ scale: 1.03 }}
@@ -140,8 +142,8 @@ const AlbumHeader = ({
             transition={{ delay: 0.2, duration: 0.5 }}
           >
             {/* Badge */}
-            <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-gradient-to-r from-violet-500/20 to-cyan-500/20 border border-violet-500/30 text-violet-300">
+            <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-gradient-to-r from-violet-500/20 to-cyan-500/20 border border-violet-500/30 text-violet-300">
                 <Music2 className="w-2.5 h-2.5" />
                 Album
               </span>
@@ -168,7 +170,7 @@ const AlbumHeader = ({
             </h1>
 
             {/* Artist & Stats */}
-            <div className="flex flex-wrap items-center gap-2 text-sm mb-4">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-sm mb-4">
               <span className="font-bold text-white cursor-pointer hover:underline">
                 {album?.artist}
               </span>
@@ -187,7 +189,7 @@ const AlbumHeader = ({
             </div>
 
             {/* Action Buttons - COMPACT */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center sm:justify-start gap-2">
               {/* Play Button */}
               <motion.button
                 onClick={onPlay}
@@ -290,7 +292,7 @@ const SongRow = ({
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`grid grid-cols-[40px_1fr_140px_70px] sm:grid-cols-[40px_2fr_180px_80px] gap-4 px-3 py-2.5 rounded-lg group cursor-pointer transition-all ${
+      className={`grid grid-cols-[40px_1fr_70px] sm:grid-cols-[40px_2fr_180px_80px] gap-4 px-3 py-2.5 rounded-lg group cursor-pointer transition-all ${
         isCurrentSong ? "bg-emerald-500/10" : "hover:bg-white/[0.03]"
       }`}
     >
@@ -369,6 +371,7 @@ const SongRow = ({
 // ═══════════════════════════════════════════════════════════════
 const AlbumPage = () => {
   const { albumId } = useParams();
+  const navigate = useNavigate();
   const { fetchAlbumById, currentAlbum, isAlbumLoading } = useMusicStore();
   const { currentSong, isPlaying, playAlbum, togglePlay } = usePlayerStore();
 
@@ -410,6 +413,20 @@ const AlbumPage = () => {
     <div className="h-full rounded-xl overflow-hidden relative">
       <AnimatedBackground imageUrl={currentAlbum?.imageUrl} />
 
+      {/* Back Button for Mobile */}
+      <motion.button
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        onClick={() => {
+          navigate("/");
+          useUIStore.getState().setIsLibraryOpen(true);
+        }}
+        className="absolute top-4 left-4 z-30 p-2 rounded-full bg-black/40 backdrop-blur-md 
+                   border border-white/10 text-white hover:bg-black/60 transition-colors md:hidden"
+      >
+        <ChevronLeft className="size-6" />
+      </motion.button>
+
       <div
         className="absolute inset-0 rounded-xl pointer-events-none z-[1]"
         style={{ border: "1px solid rgba(255,255,255,0.04)" }}
@@ -428,7 +445,7 @@ const AlbumPage = () => {
 
           {/* Table Header */}
           <div className="sticky top-0 z-20 px-3 py-2 backdrop-blur-xl bg-black/40 border-b border-white/[0.06]">
-            <div className="grid grid-cols-[40px_1fr_140px_70px] sm:grid-cols-[40px_2fr_180px_80px] gap-4 px-3 text-[10px] font-bold uppercase tracking-widest text-zinc-600">
+            <div className="grid grid-cols-[40px_1fr_70px] sm:grid-cols-[40px_2fr_180px_80px] gap-4 px-3 text-[10px] font-bold uppercase tracking-widest text-zinc-600">
               <div className="flex items-center justify-center">#</div>
               <div>Title</div>
               <div className="hidden sm:block">Date Added</div>
@@ -439,7 +456,7 @@ const AlbumPage = () => {
           </div>
 
           {/* Songs List */}
-          <ScrollArea className="h-[calc(100vh-380px)]">
+          <ScrollArea className="h-full">
             <div className="px-3 pt-2 pb-32 space-y-1">
               {currentAlbum?.songs.map((song: any, index: number) => (
                 <SongRow

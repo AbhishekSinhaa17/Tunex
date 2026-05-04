@@ -481,7 +481,7 @@ const HomePage = () => {
         <Topbar />
       </div>
 
-      <ScrollArea.Root className="h-[calc(100vh-180px)] w-full overflow-hidden relative z-10">
+      <ScrollArea.Root className="h-[calc(100vh-160px)] sm:h-[calc(100vh-180px)] w-full overflow-hidden relative z-10">
         <ScrollArea.Viewport className="h-full w-full min-h-full">
           <div className="p-4 sm:p-6 lg:p-10 max-w-[1600px] mx-auto">
             {/* ═══ HERO SECTION ═══ */}
@@ -505,7 +505,7 @@ const HomePage = () => {
                 </div>
                 <span className="text-[11px] font-medium text-zinc-400 tracking-wide">
                   {new Date().toLocaleDateString("en-US", {
-                    weekday: "long",
+                    weekday: "short",
                     month: "short",
                     day: "numeric",
                   })}{" "}
@@ -518,7 +518,7 @@ const HomePage = () => {
               </motion.div>
 
               {/* Greeting */}
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tighter leading-[0.9]">
+              <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tighter leading-[0.9]">
                 <TypewriterText text={getGreeting()} delay={0.3} />
               </h1>
 

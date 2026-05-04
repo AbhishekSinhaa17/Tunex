@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useChatStore } from "@/stores/useChatStore";
 
+import MobileNav from "./components/MobileNav";
+
 const MainLayout = () => {
 	const [isMobile, setIsMobile] = useState(false);
 	const { user } = useUser();
@@ -31,33 +33,40 @@ const MainLayout = () => {
 
 	return (
 		<div className='h-screen bg-black text-white flex flex-col overflow-hidden'>
-			<ResizablePanelGroup direction='horizontal' className='flex-1 flex h-full overflow-hidden p-2 relative z-10'>
+			<div className='flex-1 flex overflow-hidden p-2 relative z-10'>
 				<AudioPlayer />
 
-				{/* left sidebar */}
-				<ResizablePanel defaultSize={20} minSize={isMobile ? 0 : 10} maxSize={30}>
-					<LeftSidebar />
-				</ResizablePanel>
-
-				<ResizableHandle className='w-2 bg-black rounded-lg transition-colors' />
-
-				{/* main content */}
-				<ResizablePanel defaultSize={isMobile ? 80 : 60}>
-					<Outlet />
-				</ResizablePanel>
-
-				{!isMobile && (
-					<>
-						<ResizableHandle className='w-2 bg-black rounded-lg transition-colors' />
-						<ResizablePanel defaultSize={20} minSize={0} maxSize={25} collapsedSize={0}>
-							<FriendsActivity />
+				{isMobile ? (
+					<main className='flex-1 overflow-hidden rounded-lg mb-[130px] sm:mb-0'>
+						<Outlet />
+					</main>
+				) : (
+					<ResizablePanelGroup direction='horizontal' className='flex-1 flex h-full overflow-hidden'>
+						{/* left sidebar */}
+						<ResizablePanel defaultSize={20} minSize={10} maxSize={30}>
+							<LeftSidebar />
 						</ResizablePanel>
-					</>
-				)}
-			</ResizablePanelGroup>
 
-			<div className="relative z-30">
+						<ResizableHandle className='w-2 bg-black rounded-lg transition-colors' />
+
+						{/* main content */}
+						<ResizablePanel defaultSize={60}>
+							<Outlet />
+						</ResizablePanel>
+
+						<>
+							<ResizableHandle className='w-2 bg-black rounded-lg transition-colors' />
+							<ResizablePanel defaultSize={20} minSize={0} maxSize={25} collapsedSize={0}>
+								<FriendsActivity />
+							</ResizablePanel>
+						</>
+					</ResizablePanelGroup>
+				)}
+			</div>
+
+			<div className='fixed bottom-0 left-0 right-0 z-50 flex flex-col'>
 				<PlaybackControls />
+				<MobileNav />
 			</div>
 		</div>
 	);
