@@ -270,3 +270,30 @@ html {
     0 20px 40px rgba(0, 0, 0, 0.3),
     0 0 20px rgba(139, 92, 246, 0.05);
 }
+
+/* ─── Mobile Polish (NEW) ─────────────────────────────────── */
+@layer utilities {
+  .mobile-tap-highlight {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .safe-bottom-padding {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 100px);
+  }
+}
+
+.glass-pill {
+  background: rgba(22, 22, 34, 0.7);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}

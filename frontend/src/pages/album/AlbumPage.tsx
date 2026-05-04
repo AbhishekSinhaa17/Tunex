@@ -55,7 +55,8 @@ const AnimatedBackground = ({ imageUrl }: { imageUrl?: string }) => (
     <motion.div
       className="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl"
       style={{
-        background: "radial-gradient(circle, rgba(139,92,246,0.08), transparent 70%)",
+        background:
+          "radial-gradient(circle, rgba(139,92,246,0.08), transparent 70%)",
       }}
       animate={{
         x: [0, 50, 0],
@@ -82,7 +83,7 @@ const AlbumHeader = ({
 
   const totalDuration = album?.songs?.reduce(
     (acc: number, song: any) => acc + song.duration,
-    0
+    0,
   );
 
   return (
@@ -126,10 +127,17 @@ const AlbumHeader = ({
               }}
               transition={{
                 x: { duration: 0.5 },
-                rotate: { duration: 3, repeat: isPlaying ? Infinity : 0, ease: "linear" },
+                rotate: {
+                  duration: 3,
+                  repeat: isPlaying ? Infinity : 0,
+                  ease: "linear",
+                },
               }}
             >
-              <Disc3 className="w-full h-full text-zinc-700" strokeWidth={0.5} />
+              <Disc3
+                className="w-full h-full text-zinc-700"
+                strokeWidth={0.5}
+              />
             </motion.div>
           </div>
         </motion.div>
@@ -143,7 +151,7 @@ const AlbumHeader = ({
           >
             {/* Badge */}
             <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-gradient-to-r from-violet-500/20 to-cyan-500/20 border border-violet-500/30 text-violet-300">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-gradient-to-r from-violet-500/20 to-cyan-500/20 border border-violet-500/30 text-violet-300">
                 <Music2 className="w-2.5 h-2.5" />
                 Album
               </span>
@@ -159,7 +167,8 @@ const AlbumHeader = ({
               <span
                 className="inline-block"
                 style={{
-                  background: "linear-gradient(135deg, #ffffff 0%, #e4e4e7 50%, #a1a1aa 100%)",
+                  background:
+                    "linear-gradient(135deg, #ffffff 0%, #e4e4e7 50%, #a1a1aa 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -226,7 +235,11 @@ const AlbumHeader = ({
 
               {/* Secondary Actions */}
               <ActionButton icon={Shuffle} onClick={() => {}} />
-              <ActionButton icon={Heart} isActive={isLiked} onClick={() => setIsLiked(!isLiked)} />
+              <ActionButton
+                icon={Heart}
+                isActive={isLiked}
+                onClick={() => setIsLiked(!isLiked)}
+              />
               <ActionButton icon={Download} onClick={() => {}} />
               <ActionButton icon={Share2} onClick={() => {}} />
             </div>
@@ -311,12 +324,20 @@ const SongRow = ({
                   key={bar}
                   className="w-[2.5px] rounded-full bg-emerald-500"
                   animate={{ height: ["3px", "12px", "5px", "10px", "3px"] }}
-                  transition={{ duration: 0.8, repeat: Infinity, delay: bar * 0.1 }}
+                  transition={{
+                    duration: 0.8,
+                    repeat: Infinity,
+                    delay: bar * 0.1,
+                  }}
                 />
               ))}
             </motion.div>
           ) : isHovered ? (
-            <motion.div key="play" initial={{ scale: 0 }} animate={{ scale: 1 }}>
+            <motion.div
+              key="play"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+            >
               <Play className="w-3.5 h-3.5 text-white fill-white" />
             </motion.div>
           ) : (
@@ -340,7 +361,9 @@ const SongRow = ({
         <div className="min-w-0">
           <div
             className={`font-semibold text-sm truncate ${
-              isCurrentSong ? "text-emerald-400" : "text-white group-hover:text-emerald-300"
+              isCurrentSong
+                ? "text-emerald-400"
+                : "text-white group-hover:text-emerald-300"
             }`}
           >
             {song.title}
@@ -395,7 +418,7 @@ const AlbumPage = () => {
   const handlePlayAlbum = () => {
     if (!currentAlbum) return;
     const isCurrentAlbumPlaying = currentAlbum?.songs.some(
-      (song) => song._id === currentSong?._id
+      (song) => song._id === currentSong?._id,
     );
     if (isCurrentAlbumPlaying) togglePlay();
     else playAlbum(currentAlbum?.songs, 0);
@@ -407,22 +430,24 @@ const AlbumPage = () => {
   };
 
   const isAlbumPlaying =
-    currentAlbum?.songs.some((song) => song._id === currentSong?._id) && isPlaying;
+    currentAlbum?.songs.some((song) => song._id === currentSong?._id) &&
+    isPlaying;
 
   return (
     <div className="h-full rounded-xl overflow-hidden relative">
       <AnimatedBackground imageUrl={currentAlbum?.imageUrl} />
 
-      {/* Back Button for Mobile */}
       <motion.button
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
+        whileTap={{ scale: 0.9 }}
         onClick={() => {
           navigate("/");
           useUIStore.getState().setIsLibraryOpen(true);
         }}
-        className="absolute top-4 left-4 z-30 p-2 rounded-full bg-black/40 backdrop-blur-md 
-                   border border-white/10 text-white hover:bg-black/60 transition-colors md:hidden"
+        className="absolute top-6 left-6 z-30 w-12 h-12 rounded-2xl bg-black/60 backdrop-blur-2xl 
+                   border border-white/10 text-white flex items-center justify-center 
+                   shadow-2xl shadow-black/40 md:hidden transition-colors hover:bg-black/80"
       >
         <ChevronLeft className="size-6" />
       </motion.button>
@@ -433,13 +458,18 @@ const AlbumPage = () => {
       />
 
       <div className="relative z-10 flex flex-col h-full">
-        <AlbumHeader album={currentAlbum} onPlay={handlePlayAlbum} isPlaying={isAlbumPlaying ? isAlbumPlaying : false} />
+        <AlbumHeader
+          album={currentAlbum}
+          onPlay={handlePlayAlbum}
+          isPlaying={isAlbumPlaying ? isAlbumPlaying : false}
+        />
 
         <div className="flex-1 min-h-0 relative">
           <div
             className="absolute top-0 left-0 right-0 h-6 pointer-events-none z-10"
             style={{
-              background: "linear-gradient(to bottom, rgba(8,8,14,0.9), transparent)",
+              background:
+                "linear-gradient(to bottom, rgba(8,8,14,0.9), transparent)",
             }}
           />
 
@@ -455,9 +485,8 @@ const AlbumPage = () => {
             </div>
           </div>
 
-          {/* Songs List */}
           <ScrollArea className="h-full">
-            <div className="px-3 pt-2 pb-32 space-y-1">
+            <div className="px-3 pt-2 pb-40 space-y-1">
               {currentAlbum?.songs.map((song: any, index: number) => (
                 <SongRow
                   key={song._id}
@@ -474,7 +503,8 @@ const AlbumPage = () => {
           <div
             className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none z-10"
             style={{
-              background: "linear-gradient(to top, rgba(8,8,14,1), transparent)",
+              background:
+                "linear-gradient(to top, rgba(8,8,14,1), transparent)",
             }}
           />
         </div>

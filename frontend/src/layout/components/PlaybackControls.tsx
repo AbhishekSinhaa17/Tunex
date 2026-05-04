@@ -76,8 +76,12 @@ const NowPlayingMini = () => {
             <Music2 className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-700" />
           </div>
           <div className="min-w-0">
-            <p className="text-xs sm:text-sm font-medium text-zinc-600 truncate">No track</p>
-            <p className="text-[10px] sm:text-xs text-zinc-700 truncate">Select a song</p>
+            <p className="text-xs sm:text-sm font-medium text-zinc-600 truncate">
+              No track
+            </p>
+            <p className="text-[10px] sm:text-xs text-zinc-700 truncate">
+              Select a song
+            </p>
           </div>
         </motion.div>
       </div>
@@ -581,15 +585,11 @@ export const PlaybackControls = () => {
 
   return (
     <footer
-      className="h-20 sm:h-24 px-4 relative z-50"
-      style={{
-        background:
-          "linear-gradient(180deg, rgba(12,10,26,0.95) 0%, rgba(8,8,14,0.98) 100%)",
-      }}
+      className="h-auto sm:h-24 px-4 relative z-50 sm:bg-gradient-to-b sm:from-[#0c0a1a]/95 sm:to-[#08080e]/98"
     >
-      {/* Top border glow */}
+      {/* Desktop Top border glow */}
       <div
-        className="absolute top-0 left-0 right-0 h-px"
+        className="absolute top-0 left-0 right-0 h-px hidden sm:block"
         style={{
           background:
             "linear-gradient(90deg, transparent, rgba(139,92,246,0.2), rgba(6,182,212,0.2), transparent)",
@@ -609,7 +609,38 @@ export const PlaybackControls = () => {
         />
       )}
 
-      <div className="flex justify-between items-center h-full max-w-[1800px] mx-auto relative">
+      {/* Mobile Floating Mini Player */}
+      <div className="sm:hidden w-[92%] max-w-md mx-auto mb-3">
+        <motion.div 
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="bg-[#1c1c28]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-2xl flex items-center gap-3 relative"
+        >
+          <NowPlayingMini />
+          <div className="flex items-center gap-1 pr-2">
+             <ControlButton
+               icon={isPlaying ? Pause : Play}
+               onClick={togglePlay}
+               disabled={!currentSong}
+               size="lg"
+             />
+             <ControlButton
+               icon={SkipForward}
+               onClick={playNext}
+               disabled={!currentSong}
+             />
+          </div>
+          {/* Progress mini-bar at bottom of card */}
+          <div className="absolute bottom-0 left-4 right-4 h-[2px] bg-white/5 rounded-full overflow-hidden">
+             <motion.div 
+               className="h-full bg-gradient-to-r from-violet-500 to-cyan-400"
+               style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
+             />
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="hidden sm:flex justify-between items-center h-full max-w-[1800px] mx-auto relative">
         <div className="flex-shrink-0 w-auto sm:w-[30%]">
           <NowPlayingMini />
         </div>

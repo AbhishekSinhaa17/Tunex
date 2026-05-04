@@ -87,7 +87,13 @@ const FloatingParticles = () => {
           animate={{
             y: [0, -80, -160, -80, 0],
             x: [0, 30, -20, 40, 0],
-            opacity: [p.opacity, p.opacity * 2, p.opacity, p.opacity * 1.5, p.opacity],
+            opacity: [
+              p.opacity,
+              p.opacity * 2,
+              p.opacity,
+              p.opacity * 1.5,
+              p.opacity,
+            ],
             scale: [1, 1.5, 1, 1.8, 1],
           }}
           transition={{
@@ -187,7 +193,13 @@ const AudioWaveDecoration = () => {
 // ═══════════════════════════════════════════════════════════════
 // ─── TYPEWRITER TEXT ──────────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════
-const TypewriterText = ({ text, delay = 0 }: { text: string; delay?: number }) => {
+const TypewriterText = ({
+  text,
+  delay = 0,
+}: {
+  text: string;
+  delay?: number;
+}) => {
   const [displayText, setDisplayText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
 
@@ -339,8 +351,15 @@ const NeonLine = ({ delay = 0 }: { delay?: number }) => (
 // ─── STATS BAR ────────────────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════
 const StatsBar = () => {
-  const { featuredSongs = [], madeForYouSongs = [], trendingSongs = [] } = useMusicStore();
-  const totalSongs = (featuredSongs?.length || 0) + (madeForYouSongs?.length || 0) + (trendingSongs?.length || 0);
+  const {
+    featuredSongs = [],
+    madeForYouSongs = [],
+    trendingSongs = [],
+  } = useMusicStore();
+  const totalSongs =
+    (featuredSongs?.length || 0) +
+    (madeForYouSongs?.length || 0) +
+    (trendingSongs?.length || 0);
 
   const stats = [
     { label: "Tracks", value: totalSongs, icon: "🎵" },
@@ -400,7 +419,6 @@ const StatsBar = () => {
     </motion.div>
   );
 };
-
 
 // ═══════════════════════════════════════════════════════════════
 // ─── SECTION REVEAL WRAPPER ───────────────────────────────────
@@ -536,7 +554,6 @@ const HomePage = () => {
                 <AudioWaveDecoration />
               </motion.div>
 
-
               <StatsBar />
             </motion.section>
 
@@ -581,7 +598,9 @@ const HomePage = () => {
                 <SectionGrid
                   title="Made For You"
                   songs={madeForYouSongs}
-                  isLoading={isMadeForYouLoading && (madeForYouSongs?.length || 0) === 0}
+                  isLoading={
+                    isMadeForYouLoading && (madeForYouSongs?.length || 0) === 0
+                  }
                 />
               </RevealSection>
 
@@ -591,7 +610,9 @@ const HomePage = () => {
                 <SectionGrid
                   title="Trending"
                   songs={trendingSongs}
-                  isLoading={isTrendingLoading && (trendingSongs?.length || 0) === 0}
+                  isLoading={
+                    isTrendingLoading && (trendingSongs?.length || 0) === 0
+                  }
                 />
               </RevealSection>
             </div>

@@ -37,7 +37,7 @@ const MainLayout = () => {
 				<AudioPlayer />
 
 				{isMobile ? (
-					<main className='flex-1 overflow-hidden rounded-lg mb-[130px] sm:mb-0'>
+					<main className='flex-1 overflow-hidden rounded-lg mb-[180px] sm:mb-0'>
 						<Outlet />
 					</main>
 				) : (
@@ -64,9 +64,13 @@ const MainLayout = () => {
 				)}
 			</div>
 
-			<div className='fixed bottom-0 left-0 right-0 z-50 flex flex-col'>
-				<PlaybackControls />
-				<MobileNav />
+			<div className='fixed bottom-0 left-0 right-0 z-50 flex flex-col pointer-events-none'>
+				<div className="pointer-events-auto w-full">
+					<PlaybackControls />
+				</div>
+				<div className="pointer-events-auto w-full pb-6 sm:pb-0">
+					<MobileNav />
+				</div>
 			</div>
 		</div>
 	);
