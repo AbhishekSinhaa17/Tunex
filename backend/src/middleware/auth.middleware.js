@@ -14,8 +14,6 @@ export const requireAdmin = async (req, res, next) => {
     const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
     const userEmail = currentUser.primaryEmailAddress?.emailAddress?.trim().toLowerCase();
 
-    console.log("Admin Check - Required:", adminEmail, "| User:", userEmail);
-
     if (adminEmail !== userEmail) {
       return res
         .status(403)
