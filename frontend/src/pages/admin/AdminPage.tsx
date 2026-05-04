@@ -246,6 +246,7 @@ const AdminPage = () => {
                       }}
                     />
                   )}
+                </TabsTrigger>
               </TabsList>
             </div>
 
